@@ -4,7 +4,8 @@ import plastic from "./images/plastic.png";
 import wooden from "./images/wooden.png";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const Step5 = ({ goToStep, setIsPlastic }) => {
+const Step5 = ({ goToStep, setIsPlastic, isManualInput }) => {
+  const nextStep = isManualInput ? 6 : 5; // manual -> TransitionDataPage; file -> UploadFilePage
   return (
     <>
       <div className="card4">
@@ -24,7 +25,7 @@ const Step5 = ({ goToStep, setIsPlastic }) => {
 
           <div className="row">
             <div className="col-md-6">
-              <div className="option" onClick={() => { goToStep(5); setIsPlastic(true); }}>
+              <div className="option" onClick={() => { goToStep(nextStep); setIsPlastic(true); }}>
                 <div className="text">
                   <h3 className="ubuntu-regular">I choose Plastic one</h3>
                   <p className="ubuntu-regular">
@@ -32,12 +33,12 @@ const Step5 = ({ goToStep, setIsPlastic }) => {
                   </p>
                 </div>
                 <div className="img">
-                  <img src={plastic}></img>
+                  <img src={plastic} alt="Plastic pallet"></img>
                 </div>
               </div>
             </div>
             <div className="col-md-6">
-              <div className="option" onClick={() => goToStep(5)}>
+              <div className="option" onClick={() => { goToStep(nextStep); }}>
                 <div className="text">
                   <h3 className="ubuntu-regular">I choose Wooden one</h3>
                   <p className="ubuntu-regular">
@@ -45,7 +46,7 @@ const Step5 = ({ goToStep, setIsPlastic }) => {
                   </p>
                 </div>
                 <div className="img">
-                  <img src={wooden}></img>
+                  <img src={wooden} alt="Wooden pallet"></img>
                 </div>
               </div>
             </div>

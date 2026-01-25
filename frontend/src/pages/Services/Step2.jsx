@@ -25,7 +25,7 @@ const Step2 = ({ goToStep, setIsManualInput }) => {
 
           <div className="row">
             <div className="col-md-6">
-              <div className="option" onClick={() => { /* goToStep(2); */ setIsManualInput(true); }}>
+              <div className="option" onClick={() => { setIsManualInput(true); goToStep(2); }}>
                 <div className="text">
                   <h3 className="ubuntu-regular">I know the dimensions</h3>
                   <p className="ubuntu-regular">
@@ -36,7 +36,7 @@ const Step2 = ({ goToStep, setIsManualInput }) => {
               </div>
             </div>
             <div className="col-md-6">
-              <div className="option" onClick={() => goToStep(3)}>
+              <div className="option" onClick={() => { setIsManualInput(false); goToStep(3); }}>
                 <div className="text">
                   <h3 className="ubuntu-regular">I have a database</h3>
                   <p className="ubuntu-regular">

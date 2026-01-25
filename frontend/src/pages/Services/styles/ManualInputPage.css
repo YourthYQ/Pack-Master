@@ -1,0 +1,133 @@
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
+
+.card-manual {
+  background-color: #fff;
+  border: 0.07em solid #f0d6af;
+  border-radius: 0.63em;
+  padding: 2.5em 3em;
+  max-width: 62%;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.card-manual .title {
+  margin-bottom: 1.5em;
+  color: #4a4a5a;
+}
+
+.card-manual .title h2 {
+  font-size: 1.4em;
+  margin-bottom: 0.5em;
+}
+
+.card-manual .add-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75em;
+  margin-bottom: 1.5em;
+}
+
+.card-manual .add-box input {
+  width: 6em;
+  padding: 0.5em 0.75em;
+  border: 1px solid #e1ae63;
+  border-radius: 6px;
+  font-size: 0.95em;
+}
+
+.card-manual .btn-add {
+  background-color: #4a4a5a;
+  color: #fff;
+  border: none;
+  padding: 0.5em 1.25em;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.card-manual .btn-add:hover {
+  background-color: #3a3a4a;
+}
+
+.card-manual .box-list {
+  margin-bottom: 1.5em;
+}
+
+.card-manual .box-list h3 {
+  font-size: 1em;
+  color: #4a4a5a;
+  margin-bottom: 0.5em;
+}
+
+.card-manual .box-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.card-manual .box-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4em 0.6em;
+  background: #fcf9f5;
+  border-radius: 6px;
+  margin-bottom: 0.4em;
+}
+
+.card-manual .btn-remove {
+  background: none;
+  border: none;
+  color: #c00;
+  cursor: pointer;
+  font-size: 0.85em;
+  padding: 0.2em 0.5em;
+}
+
+.card-manual .btn-remove:hover {
+  text-decoration: underline;
+}
+
+.card-manual .actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5em;
+}
+
+.card-manual .btn-back {
+  background-color: #e8e8e8;
+  color: #4a4a5a;
+  border: none;
+  padding: 0.6em 1.25em;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.card-manual .btn-next {
+  background-color: #4a4a5a;
+  color: #fff;
+  border: none;
+  padding: 0.6em 1.5em;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.card-manual .btn-next:hover {
+  background-color: #3a3a4a;
+}
+
+@media (max-width: 1080px) {
+  .card-manual {
+    max-width: 90%;
+    padding: 1.5em;
+  }
+  .card-manual .add-box {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .card-manual .add-box input {
+    width: 100%;
+  }
+}

@@ -1,8 +1,11 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from algorithms.ga import run_brkga  # Import the genetic algorithm
+from dotenv import load_dotenv
+
+load_dotenv()
+
+from algorithms.ga import run_brkga
 from algorithms.box import Box
-import pandas as pd
 import json
 from scaling import import_box_data, format_pallet_unit
 from algorithms.placement import get_box_dimensions
@@ -10,59 +13,55 @@ from algorithms.placement import get_box_dimensions
 app = Flask(__name__)
 CORS(app)
 
-ALLOWED_EXTENSIONS = {'csv', 'xlsx'}
+ALLOWED_EXTENSIONS = {"xlsx"}
 
-# Helper function to check file extension
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/palletize', methods=['POST'])
+def err(message, code=None):
+    out = {"error": message}
+    if code:
+        out["code"] = code
+    return out
+
+@app.route("/palletize", methods=["POST"])
 def palletize():
-    # Initialize variables to handle both file and manual input
     boxes = None
     pallet_dims = None
     scale_ratio = None
-    # Check if a file is included in the request (for file upload scenario)
-    if 'file' in request.files:
-        file = request.files['file']
-        if file and allowed_file(file.filename):
-            # Get pallet dimensions from the request form
-            pallet_dims_str = request.form['pallet_dims']
 
-            # Parse pallet dimensions (they come as strings in the form data)
-            pallet_dims = json.loads(pallet_dims_str)
-            pallet_dims = [float(pallet_dims['length']), float(pallet_dims['width']), float(pallet_dims['height'])]  # Convert each to float
-
-            # Testing
-            print(f'!!!!!!!!!!{pallet_dims[0]}, {pallet_dims[1]}, {pallet_dims[2]}')
-
-            # Parse the uploaded file to get the box data
-            boxes, scale_ratio = import_box_data(file, pallet_dims)
-        else:
-            return jsonify({"error": "Invalid file format. Please upload CSV or XLSX files."}), 400
-    else:
-        # Handle manual input scenario
+    if "file" in request.files:
+        file = request.files["file"]
+        if not file or not allowed_file(file.filename):
+            return jsonify(err("Invalid file. Please upload an XLSX file.", "INVALID_FILE")), 400
+        if "pallet_dims" not in request.form:
+            return jsonify(err("Missing pallet_dims in form.", "MISSING_PALLET_DIMS")), 400
         try:
-            data = request.json  # Get JSON data for manual input
-            boxes = data['boxes']  # List of boxes from the request
-            pallet_dims = data['pallet_dims']  # Pallet dimensions from the request
-            pallet_dims = [float(pallet_dims[0]), float(pallet_dims[1]), float(pallet_dims[2])]  # Convert pallet dimensions to float
+            pallet_dims = json.loads(request.form["pallet_dims"])
+            pallet_dims = [float(pallet_dims["length"]), float(pallet_dims["width"]), float(pallet_dims["height"])]
+        except (json.JSONDecodeError, KeyError, ValueError, TypeError):
+            return jsonify(err("Invalid pallet_dims. Need {length, width, height}.", "INVALID_PALLET_DIMS")), 400
+        try:
+            boxes, scale_ratio = import_box_data(file, pallet_dims)
+        except Exception:
+            return jsonify(err(
+                "Failed to parse Excel file. Use the expected sheet/columns (see README).",
+                "FILE_PARSE_ERROR"
+            )), 400
+    else:
+        try:
+            data = request.get_json(silent=True) or {}
+            boxes = data["boxes"]
+            pallet_dims = data["pallet_dims"]
+            pallet_dims = [float(pallet_dims[0]), float(pallet_dims[1]), float(pallet_dims[2])]
+            scale_ratio = 1
+        except (KeyError, ValueError, TypeError, IndexError):
+            return jsonify(err("Invalid JSON. Need { boxes: [{length, width, height}, ...], pallet_dims: [L,W,H] }.", "INVALID_INPUT")), 400
 
-            # Testing
-            print(f'!!!!!!!!!!{pallet_dims[0]}, {pallet_dims[1]}, {pallet_dims[2]}')
+    if boxes is None or (isinstance(boxes, list) and len(boxes) == 0):
+        return jsonify(err("No boxes provided.", "NO_BOXES")), 400
 
-            scale_ratio = 1  # Set scale ratio to 1 since we're not importing from a file
-        except (KeyError, ValueError):
-            return jsonify({"error": "Invalid input format for manual input."}), 400
-
-        # Convert the manually provided box data to Box objects
-        box_objects = [Box(i + 1, box['length'], box['width'], box['height']) for i, box in enumerate(boxes)]
-
-    # If boxes are still None, return an error
-    if boxes is None:
-        return jsonify({"error": "No boxes data provided."}), 400
-
-    # Now proceed with the common genetic algorithm execution logic
+    # Build box_objects: from Box instances (file) or dicts (manual)
     try:
         box_objects = [Box(i + 1, box.length, box.width, box.height) for i, box in enumerate(boxes)]
     except:

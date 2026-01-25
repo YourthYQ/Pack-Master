@@ -51,8 +51,8 @@ const FileUpload = ({ onFileUpload, parseOnClient = false }) => {
   return (
     <>
         <div>
-            <label htmlFor="fileUpload">Upload Excel/CSV File: </label>
-            <input type="file" id="fileUpload" accept=".csv, .xlsx, .xls" onChange={handleFileChange} />
+            <label htmlFor="fileUpload">Upload Excel (.xlsx) file: </label>
+            <input type="file" id="fileUpload" accept=".xlsx" onChange={handleFileChange} />
         </div>
     </>
   );

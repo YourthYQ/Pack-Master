@@ -2,17 +2,16 @@ import React, { useState } from "react";
 import "./styles/ServicesPage.css";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
-import Step3 from "./Step3"; // Ensure this is imported correctly
-import Step4 from "./Step4"; // Ensure this is imported correctly
+import Step4 from "./Step4";
 import Step5 from "./Step5";
+import ManualInputPage from "./ManualInputPage";
 import UploadFilePage from "./UploadFilePage";
-import TransitionDataPage from "./TransitionDataPage"; // Import the MainPage component
+import TransitionDataPage from "./TransitionDataPage";
 
-// Array of step components
 const steps = [
   Step1,
   Step2,
-  Step3,
+  ManualInputPage,
   Step4,
   Step5,
   UploadFilePage,
@@ -46,11 +45,22 @@ const ServicesPage = () => {
           <Step2 goToStep={goToStep} setIsManualInput={setIsManualInput} />
         );
       case 2:
-        return <Step3 goToStep={goToStep} />;
+        return (
+          <ManualInputPage
+            goToStep={goToStep}
+            setUploadedData={setUploadedData}
+          />
+        );
       case 3:
         return <Step4 goToStep={goToStep} setIsAir={setIsAir} />;
       case 4:
-        return <Step5 goToStep={goToStep} setIsPlastic={setIsPlastic} />;
+        return (
+          <Step5
+            goToStep={goToStep}
+            setIsPlastic={setIsPlastic}
+            isManualInput={isManualInput}
+          />
+        );
       case 5:
         return (
           <UploadFilePage
